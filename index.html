@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bible.fhl.net NGINX Log 探勘：排除 Bot 後的真實流量｜余冠諺 11220308</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&family=Noto+Serif+TC:wght@500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>:root{--font-anthropic-sans:'Noto Sans TC',system-ui,sans-serif;--font-anthropic-serif:'Noto Serif TC',Georgia,serif;
+--color-fg:#14213D;--color-fg-muted:#5B6474;--color-bg:#FBFBF8;--color-panel:#FFFFFF;--color-border-line:#E3E1D9;--color-bad:#C2410C;
+--cds-font-size-caption:13px;--cds-font-size-body:16px;--cds-font-size-heading:18px;--cds-font-size-title:32px;--cds-font-weight-medium:600;
+--cds-gap-xs:4px;--cds-gap-sm:8px;--cds-gap-md:16px;--cds-gap-lg:24px;--cds-gap-xl:40px;--cds-pad-xs:4px;--cds-pad-sm:8px;--cds-pad-lg:20px;--cds-radius:10px;
+--cds-chart-grid:#ECEAE3;--cds-chart-muted:#B8BEC6;--cds-chart-reference:#9AA3AE;--cds-surface-popover:#FFFFFF;--cds-border:#E3E1D9;--cds-shadow-popover:0 4px 16px rgba(20,33,61,.12);--cds-text-secondary:#5B6474;--cds-dur-slow:.3s}
+body{margin:0;background:var(--color-bg);padding:32px 20px 64px}
+.bx .src{font-size:13px;color:var(--color-fg-muted);margin-top:8px}
+</style><script>
+window.DATA={"actor_share": [{"actor": "宣告的Bot", "request": "9309517", "req_pct": "59.5", "ips": "36499", "gb": "574.0", "gb_pct": "64.9"}, {"actor": "分散式爬蟲", "request": "3042314", "req_pct": "19.4", "ips": "1891269", "gb": "180.4", "gb_pct": "20.4"}, {"actor": "真人", "request": "1638339", "req_pct": "10.5", "ips": "161959", "gb": "58.4", "gb_pct": "6.6"}, {"actor": "偽裝爬蟲", "request": "996965", "req_pct": "6.4", "ips": "495", "gb": "69.5", "gb_pct": "7.9"}, {"actor": "異常高頻", "request": "393940", "req_pct": "2.5", "ips": "9", "gb": "0.2", "gb_pct": "0.0"}, {"actor": "App", "request": "199679", "req_pct": "1.3", "ips": "20109", "gb": "2.1", "gb_pct": "0.2"}, {"actor": "API直連(可疑)", "request": "67445", "req_pct": "0.4", "ips": "76", "gb": "0.4", "gb_pct": "0.0"}, {"actor": "攻擊/掃描", "request": "8889", "req_pct": "0.1", "ips": "81", "gb": "0.0", "gb_pct": "0.0"}], "daily_visitors": [{"date": "2026-09-11", "GoAccess算法_IP+UA全部": "160645", "真人IP_下限": "14642", "真人IP_上限": "35618"}, {"date": "2026-09-12", "GoAccess算法_IP+UA全部": "86044", "真人IP_下限": "4541", "真人IP_上限": "17286"}, {"date": "2026-09-13", "GoAccess算法_IP+UA全部": "533120", "真人IP_下限": "12866", "真人IP_上限": "19606"}, {"date": "2026-09-14", "GoAccess算法_IP+UA全部": "976818", "真人IP_下限": "12778", "真人IP_上限": "20983"}, {"date": "2026-09-15", "GoAccess算法_IP+UA全部": "772798", "真人IP_下限": "14360", "真人IP_上限": "21906"}, {"date": "2026-09-16", "GoAccess算法_IP+UA全部": "269745", "真人IP_下限": "15590", "真人IP_上限": "26096"}, {"date": "2026-09-17", "GoAccess算法_IP+UA全部": "181290", "真人IP_下限": "12385", "真人IP_上限": "22433"}, {"date": "2026-09-18", "GoAccess算法_IP+UA全部": "171594", "真人IP_下限": "13151", "真人IP_上限": "16950"}, {"date": "2026-09-19", "GoAccess算法_IP+UA全部": "164191", "真人IP_下限": "15649", "真人IP_上限": "24866"}, {"date": "2026-09-20", "GoAccess算法_IP+UA全部": "98276", "真人IP_下限": "11577", "真人IP_上限": "19277"}], "daily_by_actor": [{"date": "2026-09-11", "actor": "API直連(可疑)", "n": "1303"}, {"date": "2026-09-11", "actor": "App", "n": "12392"}, {"date": "2026-09-11", "actor": "偽裝爬蟲", "n": "88379"}, {"date": "2026-09-11", "actor": "分散式爬蟲", "n": "110137"}, {"date": "2026-09-11", "actor": "宣告的Bot", "n": "633112"}, {"date": "2026-09-11", "actor": "攻擊/掃描", "n": "403"}, {"date": "2026-09-11", "actor": "異常高頻", "n": "5758"}, {"date": "2026-09-11", "actor": "真人", "n": "152493"}, {"date": "2026-09-12", "actor": "API直連(可疑)", "n": "1221"}, {"date": "2026-09-12", "actor": "App", "n": "8141"}, {"date": "2026-09-12", "actor": "偽裝爬蟲", "n": "22329"}, {"date": "2026-09-12", "actor": "分散式爬蟲", "n": "60297"}, {"date": "2026-09-12", "actor": "宣告的Bot", "n": "295498"}, {"date": "2026-09-12", "actor": "攻擊/掃描", "n": "238"}, {"date": "2026-09-12", "actor": "真人", "n": "75544"}, {"date": "2026-09-13", "actor": "API直連(可疑)", "n": "1394"}, {"date": "2026-09-13", "actor": "App", "n": "30837"}, {"date": "2026-09-13", "actor": "偽裝爬蟲", "n": "60256"}, {"date": "2026-09-13", "actor": "分散式爬蟲", "n": "490377"}, {"date": "2026-09-13", "actor": "宣告的Bot", "n": "1053131"}, {"date": "2026-09-13", "actor": "攻擊/掃描", "n": "1428"}, {"date": "2026-09-13", "actor": "異常高頻", "n": "29131"}, {"date": "2026-09-13", "actor": "真人", "n": "142030"}, {"date": "2026-09-14", "actor": "API直連(可疑)", "n": "4192"}, {"date": "2026-09-14", "actor": "App", "n": "18996"}, {"date": "2026-09-14", "actor": "偽裝爬蟲", "n": "107002"}, {"date": "2026-09-14", "actor": "分散式爬蟲", "n": "960786"}, {"date": "2026-09-14", "actor": "宣告的Bot", "n": "1001834"}, {"date": "2026-09-14", "actor": "攻擊/掃描", "n": "1176"}, {"date": "2026-09-14", "actor": "異常高頻", "n": "8339"}, {"date": "2026-09-14", "actor": "真人", "n": "144783"}, {"date": "2026-09-15", "actor": "API直連(可疑)", "n": "1506"}, {"date": "2026-09-15", "actor": "App", "n": "19319"}, {"date": "2026-09-15", "actor": "偽裝爬蟲", "n": "106508"}, {"date": "2026-09-15", "actor": "分散式爬蟲", "n": "740724"}, {"date": "2026-09-15", "actor": "宣告的Bot", "n": "1015812"}, {"date": "2026-09-15", "actor": "攻擊/掃描", "n": "511"}, {"date": "2026-09-15", "actor": "真人", "n": "160299"}, {"date": "2026-09-16", "actor": "API直連(可疑)", "n": "32895"}, {"date": "2026-09-16", "actor": "App", "n": "19443"}, {"date": "2026-09-16", "actor": "偽裝爬蟲", "n": "95787"}, {"date": "2026-09-16", "actor": "分散式爬蟲", "n": "223447"}, {"date": "2026-09-16", "actor": "宣告的Bot", "n": "938828"}, {"date": "2026-09-16", "actor": "攻擊/掃描", "n": "441"}, {"date": "2026-09-16", "actor": "異常高頻", "n": "36925"}, {"date": "2026-09-16", "actor": "真人", "n": "208786"}, {"date": "2026-09-17", "actor": "API直連(可疑)", "n": "6675"}, {"date": "2026-09-17", "actor": "App", "n": "19653"}, {"date": "2026-09-17", "actor": "偽裝爬蟲", "n": "68365"}, {"date": "2026-09-17", "actor": "分散式爬蟲", "n": "138281"}, {"date": "2026-09-17", "actor": "宣告的Bot", "n": "985591"}, {"date": "2026-09-17", "actor": "攻擊/掃描", "n": "922"}, {"date": "2026-09-17", "actor": "真人", "n": "242997"}, {"date": "2026-09-18", "actor": "API直連(可疑)", "n": "1988"}, {"date": "2026-09-18", "actor": "App", "n": "18463"}, {"date": "2026-09-18", "actor": "偽裝爬蟲", "n": "115627"}, {"date": "2026-09-18", "actor": "分散式爬蟲", "n": "135851"}, {"date": "2026-09-18", "actor": "宣告的Bot", "n": "1018825"}, {"date": "2026-09-18", "actor": "攻擊/掃描", "n": "2511"}, {"date": "2026-09-18", "actor": "真人", "n": "193315"}, {"date": "2026-09-19", "actor": "API直連(可疑)", "n": "4165"}, {"date": "2026-09-19", "actor": "App", "n": "22536"}, {"date": "2026-09-19", "actor": "偽裝爬蟲", "n": "159976"}, {"date": "2026-09-19", "actor": "分散式爬蟲", "n": "118928"}, {"date": "2026-09-19", "actor": "宣告的Bot", "n": "1067134"}, {"date": "2026-09-19", "actor": "攻擊/掃描", "n": "598"}, {"date": "2026-09-19", "actor": "異常高頻", "n": "20957"}, {"date": "2026-09-19", "actor": "真人", "n": "176148"}, {"date": "2026-09-20", "actor": "API直連(可疑)", "n": "12106"}, {"date": "2026-09-20", "actor": "App", "n": "29879"}, {"date": "2026-09-20", "actor": "偽裝爬蟲", "n": "172494"}, {"date": "2026-09-20", "actor": "分散式爬蟲", "n": "63355"}, {"date": "2026-09-20", "actor": "宣告的Bot", "n": "1298313"}, {"date": "2026-09-20", "actor": "攻擊/掃描", "n": "661"}, {"date": "2026-09-20", "actor": "異常高頻", "n": "292830"}, {"date": "2026-09-20", "actor": "真人", "n": "141601"}], "hourly_weekday_weekend": [{"hour": "0", "平日": "4561.0", "週末": "4804.0"}, {"hour": "1", "平日": "4200.0", "週末": "3496.0"}, {"hour": "2", "平日": "4006.0", "週末": "3529.0"}, {"hour": "3", "平日": "3756.0", "週末": "3792.0"}, {"hour": "4", "平日": "2944.0", "週末": "4105.0"}, {"hour": "5", "平日": "3489.0", "週末": "3757.0"}, {"hour": "6", "平日": "7078.0", "週末": "5443.0"}, {"hour": "7", "平日": "6124.0", "週末": "7223.0"}, {"hour": "8", "平日": "8755.0", "週末": "13714.0"}, {"hour": "9", "平日": "10965.0", "週末": "7594.0"}, {"hour": "10", "平日": "14380.0", "週末": "9694.0"}, {"hour": "11", "平日": "11284.0", "週末": "9234.0"}, {"hour": "12", "平日": "7161.0", "週末": "5330.0"}, {"hour": "13", "平日": "6472.0", "週末": "5811.0"}, {"hour": "14", "平日": "9692.0", "週末": "9074.0"}, {"hour": "15", "平日": "10213.0", "週末": "5643.0"}, {"hour": "16", "平日": "9901.0", "週末": "7550.0"}, {"hour": "17", "平日": "8784.0", "週末": "5847.0"}, {"hour": "18", "平日": "9178.0", "週末": "5704.0"}, {"hour": "19", "平日": "7129.0", "週末": "7198.0"}, {"hour": "20", "平日": "7534.0", "週末": "6547.0"}, {"hour": "21", "平日": "7887.0", "週末": "5387.0"}, {"hour": "22", "平日": "7302.0", "週末": "6258.0"}, {"hour": "23", "平日": "10986.0", "週末": "6524.0"}], "top_books": [{"書卷": "詩", "真人IP數": "12233"}, {"書卷": "創", "真人IP數": "8889"}, {"書卷": "太", "真人IP數": "8640"}, {"書卷": "撒上", "真人IP數": "7239"}, {"書卷": "徒", "真人IP數": "7122"}, {"書卷": "約", "真人IP數": "6471"}, {"書卷": "代下", "真人IP數": "6110"}, {"書卷": "路", "真人IP數": "5789"}, {"書卷": "民", "真人IP數": "5511"}, {"書卷": "撒下", "真人IP數": "5489"}, {"書卷": "林後", "真人IP數": "5489"}, {"書卷": "林前", "真人IP數": "5440"}, {"書卷": "賽", "真人IP數": "5272"}, {"書卷": "可", "真人IP數": "4695"}, {"書卷": "羅", "真人IP數": "4380"}], "top_chapters": [{"章": "創 1", "真人IP數": "2432"}, {"章": "撒上 17", "真人IP數": "1206"}, {"章": "徒 9", "真人IP數": "1204"}, {"章": "林後 11", "真人IP數": "1169"}, {"章": "徒 10", "真人IP數": "1130"}, {"章": "撒下 22", "真人IP數": "1045"}, {"章": "太 5", "真人IP數": "997"}, {"章": "林前 16", "真人IP數": "978"}, {"章": "林後 12", "真人IP數": "944"}, {"章": "撒上 25", "真人IP數": "932"}, {"章": "創 2", "真人IP數": "889"}, {"章": "詩 2", "真人IP數": "877"}, {"章": "羅 8", "真人IP數": "862"}, {"章": "約 3", "真人IP數": "817"}, {"章": "撒下 19", "真人IP數": "788"}], "human_os": [{"os": "Windows", "ips": "34783", "pct": "50.4"}, {"os": "macOS", "ips": "13764", "pct": "19.9"}, {"os": "iOS", "ips": "8865", "pct": "12.8"}, {"os": "Android", "ips": "5701", "pct": "8.3"}, {"os": "Linux", "ips": "3534", "pct": "5.1"}, {"os": "其他", "ips": "2416", "pct": "3.5"}], "human_scripts": [{"script": "au", "request": "437072", "ips": "3830"}, {"script": "read", "request": "174004", "ips": "60329"}, {"script": "qsb", "request": "78981", "ips": "5010"}, {"script": "com", "request": "59528", "ips": "23447"}, {"script": "parsing", "request": "49257", "ips": "16514"}, {"script": "sc", "request": "45329", "ips": "3043"}, {"script": "search", "request": "41621", "ips": "8352"}, {"script": "fhlwhparsing", "request": "36841", "ips": "8663"}, {"script": "qs", "request": "30849", "ips": "4038"}, {"script": "qb", "request": "28150", "ips": "1342"}, {"script": "ob", "request": "27513", "ips": "23382"}, {"script": "s", "request": "20480", "ips": "8748"}], "lang_by_actor": [{"actor": "偽裝爬蟲", "簡體%": "21.5"}, {"actor": "分散式爬蟲", "簡體%": "21.4"}, {"actor": "宣告的Bot", "簡體%": "10.2"}, {"actor": "真人", "簡體%": "7.9"}, {"actor": "攻擊/掃描", "簡體%": "3.6"}, {"actor": "App", "簡體%": "0.1"}, {"actor": "API直連(可疑)", "簡體%": "0.0"}, {"actor": "異常高頻", "簡體%": "0.0"}], "declared_bots_top": [{"bot": "Applebot", "request": "6627950", "owner": "Apple"}, {"bot": "GPTBot", "request": "687216", "owner": "OpenAI"}, {"bot": "bingbot", "request": "346495", "owner": "Microsoft"}, {"bot": "PerplexityBot", "request": "316352", "owner": "Perplexity"}, {"bot": "OAI-SearchBot", "request": "265603", "owner": "OpenAI"}, {"bot": "Amazonbot", "request": "235335", "owner": "Amazon"}, {"bot": "Googlebot", "request": "135827", "owner": "Google"}, {"bot": "ClaudeBot", "request": "89687", "owner": "Anthropic"}, {"bot": "YandexBot", "request": "76993", "owner": "Yandex"}, {"bot": "PetalBot", "request": "76253", "owner": "Huawei"}, {"bot": "SemrushBot", "request": "61007", "owner": "Semrush"}, {"bot": "SERankingBacklinksBot", "request": "49272", "owner": "SE Ranking"}], "goaccess_summary": [{"metric": "total_requests", "value": "15657088"}, {"metric": "unique_visitors", "value": "3380940"}, {"metric": "start_date", "value": "2026-09-11"}, {"metric": "end_date", "value": "2026-09-21"}], "ua_compare": [{"grp": "分散式爬蟲UA", "n_ua": "53", "ips": "1891269", "request": "3042314", "req_per_ip": "1.61", "referer_share": "0.002", "static_share": "0.003"}, {"grp": "真人UA", "n_ua": "9758", "ips": "161959", "request": "1638339", "req_per_ip": "10.12", "referer_share": "0.827", "static_share": "0.222"}]};
+(function(){const draws={},calcs={};const out={};
+const colors=['#2A78D6','#EB6834','#1BAF7A','#C2410C','#E87BA4','#008300','#7A5AF8','#A16207'];
+window.dash={colors,
+ data(id){if(calcs[id]&&!out[id]){const c=calcs[id];out[id]=c.fn(...c.inputs.map(i=>DATA[i]));}
+   const rows=DATA[id]||out[id];return rows?{status:'ok',data:rows,columns:rows.length?Object.keys(rows[0]):[]}:{status:'missing',data:[]};},
+ calc(id,o){calcs[id]=o;},
+ draw(name,fn){draws[name]=fn;}};
+function run(){for(const [n,fn] of Object.entries(draws))document.querySelectorAll('[data-draw="'+n+'"]').forEach(el=>fn(el));}
+window.addEventListener('DOMContentLoaded',run);let t;window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(run,150);});})();
+</script></head><body>
+<style>
+  .bx { max-width: 72rem; margin-inline: auto; font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+  .bx h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+  .bx .lede { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); margin: 0 0 var(--cds-gap-lg); line-height: 1.6; }
+  .bx .lede b, .bx .kpi b { font-variant-numeric: tabular-nums; }
+  .bx h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-xl) 0 var(--cds-gap-sm); }
+  .bx .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); }
+  .bx .kpi, .bx .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+  .bx .kpi .lab { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .bx .kpi .big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: var(--cds-gap-xs) 0; font-variant-numeric: tabular-nums; }
+  .bx .kpi .sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .bx .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+  .bx .card h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .bx .card .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: var(--cds-gap-xs) 0 var(--cds-gap-md); }
+  .bx .chart { position: relative; min-height: 16rem; }
+  .bx .chart.tall { min-height: 20rem; }
+  .bx table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .bx th, .bx td { text-align: right; padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+  .bx th:first-child, .bx td:first-child { text-align: left; }
+  .bx th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+  .bx .tt { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+  .bx .tt .k { color: var(--cds-text-secondary); }
+  .bx .tt .sw { display: inline-block; width: .5rem; height: .5rem; border-radius: 50%; margin-right: .3rem; }
+  .bx details { margin-top: var(--cds-gap-xl); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.7; }
+  .bx details dt { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); margin-top: var(--cds-gap-sm); }
+  .bx details dd { margin: 0; }
+  .bx [data-dash-source-state=empty] { color: transparent; }
+  .bx [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  .bx .fail { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: inherit; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .bx .fail::before { content: ''; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+</style>
+
+<div class="bx">
+  <h1>Bible.fhl.net NGINX Log 探勘：排除 Bot 後的真實流量</h1>
+  <p class="src">余冠諺 11220308｜資料探勘期中報告｜資料：bible.dedup.parquet（2026/9/11–9/20，1,566 萬筆）</p>
+  <p class="lede">2026/9/11–9/20 共 <b data-draw="kpi" data-source="kpi" data-field="total">—</b> 筆 request，真人只佔 <b data-draw="kpi" data-source="kpi" data-field="human_pct">—</b>。GoAccess 依「IP＋UA」算出每日約 <b data-draw="kpi" data-source="kpi" data-field="ga_daily">—</b> 名訪客，排除 bot 後每日真人 IP 只有 <b data-draw="kpi" data-source="kpi" data-field="low">—</b>–<b data-draw="kpi" data-source="kpi" data-field="high">—</b> 個，高估約 <b data-draw="kpi" data-source="kpi" data-field="mult_low">—</b>–<b data-draw="kpi" data-source="kpi" data-field="mult_high">—</b> 倍。</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lab">總 request（9/11–9/20）</div><div class="big" data-draw="kpi" data-source="kpi" data-field="total">—</div><div class="sub">GoAccess 報表：<span data-draw="kpi" data-source="kpi" data-field="ga_total">—</span>（相同）</div></div>
+    <div class="kpi"><div class="lab">真人 request 占比</div><div class="big" data-draw="kpi" data-source="kpi" data-field="human_pct">—</div><div class="sub">其餘是 bot、爬蟲、攻擊與 App</div></div>
+    <div class="kpi"><div class="lab">每日真人 IP（區間）</div><div class="big"><span data-draw="kpi" data-source="kpi" data-field="low">—</span>–<span data-draw="kpi" data-source="kpi" data-field="high">—</span></div><div class="sub">下限排除幽靈 IP，上限保留</div></div>
+    <div class="kpi"><div class="lab">GoAccess 訪客（10 天）</div><div class="big" data-draw="kpi" data-source="kpi" data-field="ga_visitors">—</div><div class="sub">每日平均約 <span data-draw="kpi" data-source="kpi" data-field="ga_daily">—</span></div></div>
+    <div class="kpi"><div class="lab">分散式爬蟲 IP 數</div><div class="big" data-draw="kpi" data-source="kpi" data-field="botnet_ips">—</div><div class="sub">每個 IP 只發 1–2 次 request</div></div>
+  </div>
+
+  <h2 id="mix">一、流量是誰產生的</h2>
+  <div class="grid">
+    <div class="card"><h3>各類來源的 request 占比</h3><p class="note">10 天；類別依 UA 與每個真實 IP 的行為判定</p>
+      <div class="chart dash-skeleton" data-draw="actorBar" data-source="actor_share"></div></div>
+    <div class="card"><h3>每日 request：依來源</h3><p class="note">分散式爬蟲在 9/13–9/15 爆量；9/12 全類別減半，疑為紀錄缺漏</p>
+      <div class="chart dash-skeleton" data-draw="dailyLines" data-source="daily_by_actor"></div></div>
+    <div class="card"><h3>自報身分的 Bot 排行</h3><p class="note">AI 公司的爬蟲（Apple、OpenAI、Perplexity…）佔多數</p>
+      <div class="chart tall dash-skeleton" data-draw="botsBar" data-source="declared_bots_top"></div></div>
+    <div class="card"><h3>簡體版頁面占比，依來源</h3><p class="note">爬蟲抓簡體版的比例是真人的近 3 倍</p>
+      <div class="chart dash-skeleton" data-draw="langBar" data-source="lang_by_actor"></div></div>
+  </div>
+
+  <h2 id="botnet">二、分散式爬蟲怎麼抓到的</h2>
+  <div class="grid">
+    <div class="card"><h3>53 個 UA vs 真人 UA</h3><p class="note">同一個 UA 被大量 IP 使用、幾乎沒有 referer 也不載入圖片，就不是真人</p>
+      <table data-source="ua_compare" data-row-key="grp"><thead><tr><th data-field="grp">群組</th><th data-field="n_ua">UA 數</th><th data-field="ips">IP 數</th><th data-field="req_per_ip">每 IP request</th><th data-field="referer_share">有 referer</th><th data-field="static_share">載入靜態檔</th></tr></thead><tbody data-draw="uaTable"></tbody></table></div>
+    <div class="card"><h3>每日訪客：GoAccess 算法 vs 真人</h3><p class="note">GoAccess 算法＝不同「真實 IP＋UA」數，含所有 bot</p>
+      <table data-source="daily_visitors" data-row-key="date"><thead><tr><th data-field="date">日期</th><th data-field="GoAccess算法_IP+UA全部">GoAccess 算法</th><th data-field="真人IP_下限">真人 IP 下限</th><th data-field="真人IP_上限">真人 IP 上限</th></tr></thead><tbody data-draw="visTable"></tbody></table></div>
+  </div>
+
+  <h2 id="human">三、真人在做什麼</h2>
+  <div class="grid">
+    <div class="card"><h3>每小時平均 request：平日 vs 週末</h3><p class="note">平日 10 點最高；週末 8 點有尖峰（週末樣本僅 3 天，排除 9/12）</p>
+      <div class="chart dash-skeleton" data-draw="hourLines" data-source="hourly_weekday_weekend"></div></div>
+    <div class="card"><h3>最常看的書卷</h3><p class="note">以看過的真人 IP 數計，避免少數重度使用者灌票</p>
+      <div class="chart tall dash-skeleton" data-draw="booksBar" data-source="top_books"></div></div>
+    <div class="card"><h3>最常看的章</h3><p class="note">創 1 遙遙領先；撒上、徒、林後多章上榜，疑似有共同讀經進度</p>
+      <table data-source="top_chapters" data-row-key="章"><thead><tr><th data-field="章">章</th><th data-field="真人IP數">真人 IP 數</th></tr></thead><tbody data-draw="chapTable"></tbody></table></div>
+    <div class="card"><h3>真人裝置（OS）</h3><p class="note">以 IP 計，已排除幽靈 IP</p>
+      <div class="chart dash-skeleton" data-draw="osBar" data-source="human_os"></div></div>
+    <div class="card"><h3>真人使用的功能</h3><p class="note">語音 au.php 的 request 最多，但讀經 read.php 的使用者最多</p>
+      <table data-source="human_scripts" data-row-key="script"><thead><tr><th data-field="script">功能（php）</th><th data-field="request">request</th><th data-field="ips">IP 數</th></tr></thead><tbody data-draw="scriptTable"></tbody></table></div>
+  </div>
+
+  <details>
+    <summary>判定規則、名詞與限制</summary>
+    <dl>
+      <dt>真實 IP</dt><dd>網站在 Cloudflare 後方，連線 IP 是 Cloudflare 節點；改用 client_ip（X-Forwarded-For）。</dd>
+      <dt>自報身分的 Bot</dt><dd>UA 含 bot、crawl、spider、GPTBot、ClaudeBot 等關鍵字。</dd>
+      <dt>攻擊／掃描</dt><dd>URL 含 5 次以上注入字元，或 4xx 過半且掃 10 條以上路徑。原文字型 pfont.php 的 %27 與搜尋的 %22 不算。</dd>
+      <dt>偽裝爬蟲</dt><dd>一個 IP 50 次以上 request、referer 低於 10%、靜態檔低於 5%。</dd>
+      <dt>分散式爬蟲</dt><dd>一個 UA 被 1,000 個以上 IP 使用，且 referer 低於 5%。</dd>
+      <dt>異常高頻</dt><dd>一個 IP 每小時平均 5,000 次以上 request（例：QuarkPC 瀏覽器的語音播放器 30 分鐘打 5.7 萬次 au.php）。</dd>
+      <dt>幽靈 IP</dt><dd>真人類別中只發 1–2 次、無 referer、無靜態檔的 IP；2024 年資料只佔 8.9%，2026 年佔 57%，多為分散式爬蟲漏網。</dd>
+      <dt>限制</dt><dd>9/12 全類別流量減半，疑為紀錄缺漏；IP 數不等於人數（NAT 共用）；書卷只解析出約一半的真人 request；週末樣本只有 3 天。</dd>
+    </dl>
+  </details>
+</div>
+
+<script>
+(() => {
+  const n = (x) => Number(x);
+  dash.calc('kpi', {
+    inputs: ['actor_share', 'daily_visitors', 'goaccess_summary'],
+    title: '頁首指標',
+    description: '總 request、真人占比、每日訪客平均（GoAccess 算法與真人 IP 上下限）及高估倍數。',
+    fn: (actor_share, daily_visitors, goaccess_summary) => {
+      const num = (x) => Number(x);
+      const total = actor_share.reduce((s, r) => s + num(r.request), 0);
+      const human = actor_share.find((r) => r.actor === '真人');
+      const botnet = actor_share.find((r) => r.actor === '分散式爬蟲');
+      const avg = (c) => Math.round(daily_visitors.reduce((s, r) => s + num(r[c]), 0) / daily_visitors.length);
+      const ga = (m) => num(goaccess_summary.find((r) => r.metric === m).value);
+      const low = avg('真人IP_下限'), high = avg('真人IP_上限'), gaDaily = avg('GoAccess算法_IP+UA全部');
+      return [{ total, ga_total: ga('total_requests'), human_pct: num(human.request) / total, low, high,
+        ga_daily: gaDaily, ga_visitors: ga('unique_visitors'), mult_low: Math.round(gaDaily / high), mult_high: Math.round(gaDaily / low),
+        botnet_ips: num(botnet.ips) }];
+    },
+  });
+
+  const fmt = d3.format(','), pct = d3.format('.1%');
+  const kfmt = { human_pct: pct, mult_low: (v) => String(v), mult_high: (v) => String(v) };
+  const fail = (el, id) => { const s = dash.data(id).status; if (s === 'error' || s === 'connect' || s === 'declined') { el.replaceChildren(); const d = document.createElement('div'); d.className = 'fail'; d.textContent = 'Failed to load'; el.append(d); el.classList.remove('dash-skeleton'); return true; } return false; };
+
+  dash.draw('kpi', (el) => {
+    const k = dash.data('kpi');
+    if (k.status !== 'ok' || !k.data[0]) { el.textContent = '—'; return; }
+    const f = el.dataset.field, v = k.data[0][f];
+    el.textContent = (kfmt[f] || fmt)(v);
+  });
+
+  // ---- shared chart helpers ----
+  const textW = (svg, strs) => { const t = svg.append('text').attr('font-size', 12); let w = 0; for (const s of strs) { t.text(s); w = Math.max(w, t.node().getComputedTextLength()); } t.remove(); return w; };
+  const tip = (el) => { let t = el.querySelector('.tt'); if (!t) { t = document.createElement('div'); t.className = 'tt'; t.hidden = true; el.append(t); } return t; };
+  const showTip = (el, t, x, y, head, lines) => {
+    t.replaceChildren(); const h = document.createElement('div'); h.className = 'k'; h.textContent = head; t.append(h);
+    for (const [c, name, val] of lines) { const d = document.createElement('div'); if (c) { const s = document.createElement('span'); s.className = 'sw'; s.style.background = c; d.append(s); } d.append(`${name}${name ? '：' : ''}${val}`); t.append(d); }
+    t.hidden = false; const W = el.clientWidth, tw = t.offsetWidth; t.style.left = Math.max(0, Math.min(W - tw, x + 12)) + 'px'; t.style.top = Math.max(0, y - 10) + 'px';
+  };
+
+  function hbar(el, id, rows, labelOf, valOf, vfmt, colorOf) {
+    if (fail(el, id)) return;
+    if (dash.data(id).status !== 'ok') { el.replaceChildren(); return; }
+    el.classList.remove('dash-skeleton'); el.replaceChildren();
+    const W = el.clientWidth, bh = 22, gap = 8, H = rows.length * (bh + gap) + 4;
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const lw = textW(svg, rows.map(labelOf)) + 10, vw = textW(svg, rows.map((r) => vfmt(valOf(r)))) + 10;
+    const x = d3.scaleLinear([0, d3.max(rows, valOf) || 1], [0, Math.max(10, W - lw - vw)]);
+    const t = tip(el);
+    const g = svg.selectAll('g').data(rows).join('g').attr('transform', (_, i) => `translate(0,${i * (bh + gap)})`);
+    g.append('text').attr('x', lw - 10).attr('y', bh / 2).attr('dy', '0.35em').attr('text-anchor', 'end').attr('font-size', 12).attr('fill', 'var(--color-fg)').text(labelOf);
+    g.append('rect').attr('x', lw).attr('height', bh).attr('width', (r) => Math.max(1, x(valOf(r)))).attr('rx', 3).attr('fill', colorOf)
+      .on('mousemove', (ev, r) => { const [mx, my] = d3.pointer(ev, el); showTip(el, t, mx, my, labelOf(r), [[null, '', vfmt(valOf(r))]]); })
+      .on('mouseleave', () => { t.hidden = true; });
+    g.append('text').attr('x', (r) => lw + x(valOf(r)) + 6).attr('y', bh / 2).attr('dy', '0.35em').attr('font-size', 12).attr('fill', 'var(--color-fg-muted)').text((r) => vfmt(valOf(r)));
+    el.append(t);
+  }
+
+  function lines(el, id, series, xs, xfmt, yfmt) {
+    if (fail(el, id)) return;
+    if (dash.data(id).status !== 'ok') { el.replaceChildren(); return; }
+    el.classList.remove('dash-skeleton'); el.replaceChildren();
+    const W = el.clientWidth, H = 256;
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const ymax = d3.max(series, (s) => d3.max(s.values)) || 1;
+    const y = d3.scaleLinear([0, ymax], [H - 24, 10]).nice();
+    const ml = textW(svg, y.ticks(5).map(yfmt)) + 8, mr = textW(svg, series.map((s) => s.name)) + 12;
+    const x = d3.scalePoint(xs, [ml, W - mr]);
+    svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y).attr('y2', y).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(y.ticks(5)).join('text').attr('x', ml - 6).attr('y', y).attr('dy', '0.35em').attr('text-anchor', 'end').attr('font-size', 12).attr('fill', 'var(--color-fg-muted)').text(yfmt);
+    const step = Math.ceil(xs.length / Math.max(2, Math.floor((W - ml - mr) / 48)));
+    svg.append('g').selectAll('text').data(xs.filter((_, i) => i % step === 0)).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', 'var(--color-fg-muted)').text(xfmt);
+    const line = d3.line().x((_, i) => x(xs[i])).y((v) => y(v));
+    series.forEach((s) => {
+      svg.append('path').attr('d', line(s.values)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
+      s.endY = y(s.values[s.values.length - 1]);
+    });
+    const ends = series.map((s) => ({ s, y: s.endY })).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 14);
+    ends.forEach(({ s, y: yy }) => svg.append('text').attr('x', W - mr + 6).attr('y', yy).attr('dy', '0.35em').attr('font-size', 12).attr('fill', 'var(--color-fg)').text(s.name));
+    const t = tip(el); const rule = svg.append('line').attr('y1', 10).attr('y2', H - 24).attr('stroke', 'var(--cds-chart-reference)').attr('opacity', 0);
+    svg.append('rect').attr('x', ml).attr('y', 0).attr('width', Math.max(0, W - mr - ml)).attr('height', H).attr('fill', 'transparent')
+      .on('mousemove', (ev) => { const [mx, my] = d3.pointer(ev, el); const i = d3.minIndex(xs, (v) => Math.abs(x(v) - mx)); rule.attr('x1', x(xs[i])).attr('x2', x(xs[i])).attr('opacity', 1);
+        showTip(el, t, mx, my, xfmt(xs[i]), series.map((s) => [s.color, s.name, yfmt(s.values[i])])); })
+      .on('mouseleave', () => { t.hidden = true; rule.attr('opacity', 0); });
+    el.append(t);
+  }
+
+  // ---- charts ----
+  dash.draw('actorBar', (el) => {
+    const rows = (dash.data('actor_share').data || []).map((r) => ({ a: r.actor, v: n(r.req_pct) / 100 }));
+    hbar(el, 'actor_share', rows, (r) => r.a, (r) => r.v, pct, (r) => r.a === '真人' ? dash.colors[0] : 'var(--cds-chart-muted)');
+  });
+  dash.draw('dailyLines', (el) => {
+    const rows = dash.data('daily_by_actor').data || [];
+    const xs = [...new Set(rows.map((r) => r.date))].sort();
+    const names = ['宣告的Bot', '分散式爬蟲', '真人', '偽裝爬蟲'];
+    const series = names.map((a, i) => ({ name: a, color: dash.colors[[1, 3, 0, 2][i]], values: xs.map((d) => n((rows.find((r) => r.date === d && r.actor === a) || { n: 0 }).n)) }));
+    lines(el, 'daily_by_actor', series, xs, (d) => d.slice(5).replace('-', '/'), d3.format('.2~s'));
+  });
+  dash.draw('botsBar', (el) => {
+    const rows = (dash.data('declared_bots_top').data || []).map((r) => ({ a: `${r.bot}（${r.owner}）`, v: n(r.request) }));
+    hbar(el, 'declared_bots_top', rows, (r) => r.a, (r) => r.v, fmt, () => dash.colors[1]);
+  });
+  dash.draw('langBar', (el) => {
+    const rows = (dash.data('lang_by_actor').data || []).filter((r) => n(r['簡體%']) > 0).map((r) => ({ a: r.actor, v: n(r['簡體%']) / 100 }));
+    hbar(el, 'lang_by_actor', rows, (r) => r.a, (r) => r.v, pct, (r) => r.a === '真人' ? dash.colors[0] : 'var(--cds-chart-muted)');
+  });
+  dash.draw('hourLines', (el) => {
+    const rows = dash.data('hourly_weekday_weekend').data || [];
+    const xs = rows.map((r) => n(r.hour));
+    const series = [['平日', 0], ['週末', 1]].map(([k, c]) => ({ name: k, color: dash.colors[c], values: rows.map((r) => n(r[k])) }));
+    lines(el, 'hourly_weekday_weekend', series, xs, (h) => `${h} 時`, fmt);
+  });
+  dash.draw('booksBar', (el) => {
+    const rows = (dash.data('top_books').data || []).map((r) => ({ a: r['書卷'], v: n(r['真人IP數']) }));
+    hbar(el, 'top_books', rows, (r) => r.a, (r) => r.v, fmt, () => dash.colors[0]);
+  });
+  dash.draw('osBar', (el) => {
+    const rows = (dash.data('human_os').data || []).map((r) => ({ a: r.os, v: n(r.pct) / 100 }));
+    hbar(el, 'human_os', rows, (r) => r.a, (r) => r.v, pct, () => dash.colors[0]);
+  });
+
+  // ---- tables ----
+  const tbody = (id, cols) => (el) => {
+    const d = dash.data(id);
+    el.replaceChildren();
+    if (d.status !== 'ok') return;
+    for (const r of d.data) {
+      const tr = document.createElement('tr');
+      for (const [c, f] of cols) { const td = document.createElement('td'); td.textContent = f ? f(r[c]) : r[c]; tr.append(td); }
+      el.append(tr);
+    }
+  };
+  const num = (v) => fmt(n(v)), share = (v) => pct(n(v));
+  dash.draw('uaTable', tbody('ua_compare', [['grp'], ['n_ua', num], ['ips', num], ['req_per_ip'], ['referer_share', share], ['static_share', share]]));
+  dash.draw('visTable', tbody('daily_visitors', [['date'], ['GoAccess算法_IP+UA全部', num], ['真人IP_下限', num], ['真人IP_上限', num]]));
+  dash.draw('chapTable', tbody('top_chapters', [['章'], ['真人IP數', num]]));
+  dash.draw('scriptTable', tbody('human_scripts', [['script'], ['request', num], ['ips', num]]));
+})();
+</script>
+
+</body></html>
